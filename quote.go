@@ -21,14 +21,6 @@ func (p Quote) Name() string {
 	return "Quote v1.0"
 }
 
-/*
-func (p Quote) Execute(msg xmppbot.Message, bot xmppbot.Bot) error {
-	if msg.From() != bot.FullName() {
-		bot.Send(msg.Body())
-	}
-	return nil
-}
-*/
 // Send allows the bot to send us a message
 func (p Quote) Execute(message xmppbot.Message, bot xmppbot.Bot) error {
 	var q = ""

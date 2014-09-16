@@ -21,7 +21,7 @@ import (
 type Keyword struct {
 }
 
-func (p Quote) Name() string {
+func (p Keyword) Name() string {
 	return "Keyword v1.0"
 }
 
@@ -46,8 +46,8 @@ func (k keywordSlice) Less(i, j int) bool {
 }
 
 // Send allows the bot to send a message to this helper
-func (p Keyword) Execute(message gobothelper.Message, cb gobothelper.Bot) error {
-	if strings.Contains(message.Body, "keywords") {
+func (p Keyword) Execute(message xmppbot.Message, cb xmppbot.Bot) error {
+	if strings.Contains(message.Body(), "keywords") {
 		kws := keywords("/tmp/chatlog")
 		if len(kws) > 0 {
 			for i := 0; i < len(kws) && i < 10; i++ {

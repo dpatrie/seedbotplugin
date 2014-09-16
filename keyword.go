@@ -8,9 +8,9 @@
 package seedbotplugin
 
 import (
-	"bitbucket.org/gabeguz/gobothelper"
 	"fmt"
 	"github.com/seedboxtech/kwextractor"
+	"github.com/seedboxtech/xmppbot"
 	"io/ioutil"
 	"log"
 	"sort"
@@ -18,7 +18,11 @@ import (
 )
 
 // Helper struct that will implement the helper interface
-type Helper struct {
+type Keyword struct {
+}
+
+func (p Quote) Name() string {
+	return "Keyword v1.0"
 }
 
 type keywordSlice []keyword
@@ -42,18 +46,19 @@ func (k keywordSlice) Less(i, j int) bool {
 }
 
 // Send allows the bot to send a message to this helper
-func (h *Helper) Send(message gobothelper.Message, cb gobothelper.Bot) {
+func (p Keyword) Execute(message gobothelper.Message, cb gobothelper.Bot) error {
 	if strings.Contains(message.Body, "keywords") {
 		kws := keywords("/tmp/chatlog")
 		if len(kws) > 0 {
 			for i := 0; i < len(kws) && i < 10; i++ {
 				text := fmt.Sprintf("k: %s v: %d", kws[i].Word, kws[i].Count)
-				cb.Reply(text)
+				cb.Send(text)
 			}
 		} else {
 			log.Printf("No keywords available.")
 		}
 	}
+	return nil
 }
 
 func keywords(logPath string) keywordSlice {

@@ -22,7 +22,7 @@ func (p DirectMessage) Name() string {
 
 // Send allows the bot to send a message to this helper
 func (p DirectMessage) Execute(message xmppbot.Message, cb xmppbot.Bot) error {
-	reply := dm(message.Body(), cb.FullName())
+	reply := dm(message.Body(), cb.Name())
 	if len(reply) > 0 {
 		cb.Send(reply)
 	}

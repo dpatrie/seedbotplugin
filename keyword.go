@@ -11,8 +11,6 @@ import (
 	"fmt"
     "github.com/seedboxtech/xmppbot"
 	"github.com/seedboxtech/kwextractor"
-	"github.com/seedboxtech/xmppbot"
-	"io/ioutil"
 	"log"
 	"sort"
 	"strings"
@@ -25,6 +23,8 @@ type Keyword struct {
 func (p Keyword) Name() string {
 	return "Keyword v1.0"
 }
+
+type messages []string
 
 type keywordSlice []keyword
 
@@ -46,13 +46,13 @@ func (k keywordSlice) Less(i, j int) bool {
 	return k[i].Count > k[j].Count
 }
 
-func (h Keyword) Name() string {
-    return "Keyword v1.0"
-}
 // Send allows the bot to send a message to this helper
 func (p Keyword) Execute(message xmppbot.Message, cb xmppbot.Bot) error {
+
+    messageBuffer := make(messages, 0, 0)
+    messageBuffer = append(messageBuffer, message.Body())
 	if strings.Contains(message.Body(), "keywords") {
-		kws := keywords("/tmp/chatlog")
+		kws := keywords(messageBuffer)
 		if len(kws) > 0 {
 			for i := 0; i < len(kws) && i < 10; i++ {
 				text := fmt.Sprintf("k: %s v: %d", kws[i].Word, kws[i].Count)
@@ -65,12 +65,8 @@ func (p Keyword) Execute(message xmppbot.Message, cb xmppbot.Bot) error {
 	return nil
 }
 
-func keywords(logPath string) keywordSlice {
-	fileContents, err := ioutil.ReadFile(logPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	kws := kwextractor.KeywordsAndFrequencyFrom(string(fileContents))
+func keywords(mb []string) keywordSlice {
+	kws := kwextractor.KeywordsAndFrequencyFrom(mb)
 	s := make(keywordSlice, 0, len(kws))
 
 	for k, v := range kws {

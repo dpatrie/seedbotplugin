@@ -43,13 +43,22 @@ func (m Message) From() string {
 	return "nottestbot"
 }
 
+func TestPluginName(t *testing.T) {
+	p := Echo{}
+	expected := "Echo v1.0"
+	name := p.Name()
+	if name != expected {
+		t.Errorf("Test: '%s' does not equal '%s'", name, expected)
+	}
+
+}
+
 func TestEcho(t *testing.T) {
 	message := Message{}
 	bot := Bot{}
 	p := Echo{}
-	p.Execute(message, bot)
-	expectedReply := "this is a test of the emergency broadcast network."
-	if reply != expectedReply {
-		t.Errorf("Test: '%s' does not equal '%s'", reply, expectedReply)
+	err := p.Execute(message, bot)
+	if err != nil {
+		t.Errorf("Error sending message")
 	}
 }

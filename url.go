@@ -2,8 +2,8 @@ package seedbotplugin
 
 import (
 	"github.com/seedboxtech/xmppbot"
-    "net/url"
-    "log"
+	"log"
+	"net/url"
 )
 
 type Url struct{}
@@ -14,12 +14,12 @@ func (p Url) Name() string {
 
 func (p Url) Execute(msg xmppbot.Message, bot xmppbot.Bot) error {
 
-    url, err := url.Parse(msg.Body())
-    if err != nil {
-        return err
-    }
+	u, err := url.Parse(msg.Body())
+	if err != nil {
+		return err
+	}
 
-    log.Println(url)
+	log.Printf("host: %s\n", u.Host)
 
 	return nil
 }

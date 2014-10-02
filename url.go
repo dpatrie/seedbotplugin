@@ -1,9 +1,12 @@
 package seedbotplugin
 
 import (
+	"code.google.com/p/go.net/html"
 	"github.com/seedboxtech/xmppbot"
-	"log"
+	"io/ioutil"
+	"net/http"
 	"net/url"
+	"strings"
 )
 
 type Url struct{}
@@ -19,7 +22,34 @@ func (p Url) Execute(msg xmppbot.Message, bot xmppbot.Bot) error {
 		return err
 	}
 
-	log.Printf("host: %s\n", u.Host)
+	res, err := http.Get(u.String())
+	if err != nil {
+		return (err)
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return (err)
+	}
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		return (err)
+	}
+
+	var g func(*html.Node)
+	g = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "title" {
+			for _, value := range n.Attr {
+				bot.Send(value.Val)
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			g(c)
+		}
+	}
+	g(doc)
+
+	//log.Printf("host: %s\n", u.Host)
 
 	return nil
 }

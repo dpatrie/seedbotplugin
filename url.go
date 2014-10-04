@@ -48,8 +48,5 @@ func (p Url) Execute(msg xmppbot.Message, bot xmppbot.Bot) error {
 		}
 	}
 	g(doc)
-
-	//log.Printf("host: %s\n", u.Host)
-
 	return nil
 }
